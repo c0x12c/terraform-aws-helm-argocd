@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0]() (2025-06-23)
+
+### Changes
+
+* Update Route53 Module Source to Terraform Registry.
+
 ## [0.4.4]() (2025-04-18)
 
 ### Fix Bugs

@@ -1,5 +1,7 @@
 module "route53" {
-  source   = "../../route53"
+  source  = "c0x12c/route53/aws"
+  version = "~> 0.1.14"
+
   dns_zone = var.domain_name
 }
 
