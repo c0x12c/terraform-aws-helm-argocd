@@ -49,6 +49,8 @@ dex:
   enabled: true
 
 configs:
+  secret:
+    create: true
   params:
     server.insecure: ${!var.handle_tls}
     controller.diff.server.side: "${var.server_side_diff}"
