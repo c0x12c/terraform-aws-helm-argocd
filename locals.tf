@@ -6,8 +6,6 @@ locals {
     }
   ])
 
-  third_party_github_orgs = keys(var.third_party_github_oauth_creds)
-
   in_clusters = compact(distinct([
     "in-cluster",
     var.enabled_managed_in_cluster == true ? var.in_cluster_name : null
@@ -65,7 +63,7 @@ configs:
             clientSecret: ${var.oidc_github_client_secret}
             orgs:
               - name: ${var.oidc_github_organization}
-        %{for key, creds in var.third_party_github_oauth_creds}
+        %{for key, creds in var.external_github_oauth_creds}
         - type: github
           id: github-${key}
           name: Github ${key}
