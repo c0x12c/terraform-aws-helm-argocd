@@ -6,6 +6,8 @@ locals {
     }
   ])
 
+  third_party_github_orgs = keys(var.third_party_github_oauth_creds)
+
   in_clusters = compact(distinct([
     "in-cluster",
     var.enabled_managed_in_cluster == true ? var.in_cluster_name : null

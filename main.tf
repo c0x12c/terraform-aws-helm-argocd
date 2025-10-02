@@ -50,7 +50,7 @@ resource "kubernetes_secret" "repository" {
 }
 
 resource "kubernetes_secret" "third_party_github_oauth" {
-  for_each = var.third_party_github_oauth_creds
+  for_each = toset(local.third_party_github_orgs)
   metadata {
     namespace = var.argocd_namespace
     name      = "github-oauth-${each.key}"
@@ -61,7 +61,7 @@ resource "kubernetes_secret" "third_party_github_oauth" {
   }
 
   data = {
-    "dex.${each.key}.clientSecret" = each.value.client_secret
+    "dex.${each.key}.clientSecret" = var.third_party_github_oauth_creds[each.key].client_secret
   }
 
   depends_on = [helm_release.this]
