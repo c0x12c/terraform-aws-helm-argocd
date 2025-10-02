@@ -105,6 +105,15 @@ variable "oidc_github_organization" {
   type        = string
 }
 
+variable "external_github_oauth_creds" {
+  description = "Map of external GitHub OAuth credentials where key is the GitHub external org"
+  type = map(object({
+    client_id     = string
+    client_secret = string
+  }))
+  default = {}
+}
+
 variable "rbac_policies" {
   description = "List of RBAC policies to apply"
   type        = list(string)
