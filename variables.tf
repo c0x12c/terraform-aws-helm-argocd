@@ -112,7 +112,6 @@ variable "third_party_github_oauth_creds" {
     client_secret = string
   }))
   default     = {}
-  sensitive   = true
 }
 
 variable "rbac_policies" {
