@@ -63,6 +63,16 @@ configs:
             clientSecret: ${var.oidc_github_client_secret}
             orgs:
               - name: ${var.oidc_github_organization}
+        %{for key, creds in var.third_party_github_oauth_creds}
+        - type: github
+          id: github-${key}
+          name: Github ${key}
+          config:
+            clientID: ${creds.client_id}
+            clientSecret: $github-oauth-${key}:dex.${key}.clientSecret
+            orgs:
+              - name: ${key}
+        %{endfor}
       issuer: ${var.issuer_url}
   rbac:
     policy.csv: |
