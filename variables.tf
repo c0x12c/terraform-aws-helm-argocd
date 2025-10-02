@@ -111,7 +111,7 @@ variable "external_github_oauth_creds" {
     client_id     = string
     client_secret = string
   }))
-  default     = {}
+  default = {}
 }
 
 variable "rbac_policies" {
