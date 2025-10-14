@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.2]() (2025-10-14)
+
+### Features
+
+* Allow custom ingress scheme (for internal ingress)
+
 ## [1.0.1]() (2025-06-23)
 
 ### Features
