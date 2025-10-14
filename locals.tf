@@ -40,7 +40,7 @@ server:
       alb.ingress.kubernetes.io/group.name: ${var.ingress_group_name}
       kubernetes.io/ingress.class: ${var.ingress_class_name}
       alb.ingress.kubernetes.io/target-type: "ip"
-      alb.ingress.kubernetes.io/scheme: "internet-facing"
+      alb.ingress.kubernetes.io/scheme: ${var.ingress_scheme}
       alb.ingress.kubernetes.io/listen-ports: "[{\"HTTPS\": 443}]"
     path: /
     pathType: Prefix

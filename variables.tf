@@ -203,3 +203,14 @@ variable "alb_cname" {
   type        = string
   default     = null
 }
+
+variable "ingress_scheme" {
+  description = "Scheme for the ALB ingress (internet-facing or internal)"
+  type        = string
+  default     = "internet-facing"
+
+  validation {
+    condition     = contains(["internet-facing", "internal"], var.ingress_scheme)
+    error_message = "ingress_scheme must be either 'internet-facing' or 'internal'"
+  }
+}

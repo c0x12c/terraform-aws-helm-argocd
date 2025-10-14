@@ -8,7 +8,8 @@ Terraform module which install an ArgoCD to EKS cluster and configure the necess
 
 ```hcl
 module "argocd" {
-  source = "github.com/spartan-stratos/terraform-modules//aws/eks-helm/argocd?ref=v0.4.3"
+  source  = "c0x12c/helm-argocd/aws"
+  version = "v1.0.2"
 
   domain_name = "example.com"
 
@@ -103,6 +104,7 @@ module "argocd" {
 | <a name="input_in_cluster_name"></a> [in\_cluster\_name](#input\_in\_cluster\_name) | To customize the in\_cluster name for easier management (only `enabled_managed_in_cluster = true`) | `string` | `"in-cluster"` | no |
 | <a name="input_ingress_class_name"></a> [ingress\_class\_name](#input\_ingress\_class\_name) | Ingress class name for Argo CD | `string` | `"alb"` | no |
 | <a name="input_ingress_group_name"></a> [ingress\_group\_name](#input\_ingress\_group\_name) | Ingress group name for Argo CD | `string` | `"external"` | no |
+| <a name="input_ingress_scheme"></a> [ingress\_scheme](#input\_ingress\_scheme) | Scheme for the ALB ingress (internet-facing or internal) | `string` | `"internet-facing"` | no |
 | <a name="input_issuer_url"></a> [issuer\_url](#input\_issuer\_url) | The issuer URL should be where Dex talks to the OIDC provider | `string` | `"http://argocd-dex-server:5556"` | no |
 | <a name="input_node_selector"></a> [node\_selector](#input\_node\_selector) | Node selector for the ingress controller | `map(string)` | `{}` | no |
 | <a name="input_oidc_github_client_id"></a> [oidc\_github\_client\_id](#input\_oidc\_github\_client\_id) | GitHub App Client ID for OIDC | `string` | n/a | yes |
@@ -120,3 +122,4 @@ module "argocd" {
 | Name | Description |
 |------|-------------|
 | <a name="output_aws_iam_role_arn"></a> [aws\_iam\_role\_arn](#output\_aws\_iam\_role\_arn) | n/a |
+<!-- END_TF_DOCS -->
