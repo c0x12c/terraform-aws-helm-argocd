@@ -1,12 +1,12 @@
 locals {
   notification_templates = {
-    app_deployed            = try(var.notification_templates.app_deployed, local.notification_sample_templates.app_deployed)
-    app_health_degraded     = try(var.notification_templates.app_health_degraded, local.notification_sample_templates.app_health_degraded)
-    app_sync_failed         = try(var.notification_templates.app_sync_failed, local.notification_sample_templates.app_sync_failed)
-    app_sync_running        = try(var.notification_templates.app_sync_running, local.notification_sample_templates.app_sync_running)
-    app_sync_status_unknown = try(var.notification_templates.app_sync_status_unknown, local.notification_sample_templates.app_sync_status_unknown)
-    app_sync_succeeded      = try(var.notification_templates.app_sync_succeeded, local.notification_sample_templates.app_sync_succeeded)
-    app_out_of_sync         = try(var.notification_templates.app_out_of_sync, local.notification_sample_templates.app_out_of_sync)
+    app_deployed            = coalesce(var.notification_templates.app_deployed, local.notification_sample_templates.app_deployed)
+    app_health_degraded     = coalesce(var.notification_templates.app_health_degraded, local.notification_sample_templates.app_health_degraded)
+    app_sync_failed         = coalesce(var.notification_templates.app_sync_failed, local.notification_sample_templates.app_sync_failed)
+    app_sync_running        = coalesce(var.notification_templates.app_sync_running, local.notification_sample_templates.app_sync_running)
+    app_sync_status_unknown = coalesce(var.notification_templates.app_sync_status_unknown, local.notification_sample_templates.app_sync_status_unknown)
+    app_sync_succeeded      = coalesce(var.notification_templates.app_sync_succeeded, local.notification_sample_templates.app_sync_succeeded)
+    app_out_of_sync         = coalesce(var.notification_templates.app_out_of_sync, local.notification_sample_templates.app_out_of_sync)
   }
 
   notification_sample_templates = {
