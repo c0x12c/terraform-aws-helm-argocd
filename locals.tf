@@ -1,4 +1,220 @@
 locals {
+  notification_templates = {
+    app_deployed            = try(var.notification_templates.app_deployed, local.notification_sample_templates.app_deployed)
+    app_health_degraded     = try(var.notification_templates.app_health_degraded, local.notification_sample_templates.app_health_degraded)
+    app_sync_failed         = try(var.notification_templates.app_sync_failed, local.notification_sample_templates.app_sync_failed)
+    app_sync_running        = try(var.notification_templates.app_sync_running, local.notification_sample_templates.app_sync_running)
+    app_sync_status_unknown = try(var.notification_templates.app_sync_status_unknown, local.notification_sample_templates.app_sync_status_unknown)
+    app_sync_succeeded      = try(var.notification_templates.app_sync_succeeded, local.notification_sample_templates.app_sync_succeeded)
+    app_out_of_sync         = try(var.notification_templates.app_out_of_sync, local.notification_sample_templates.app_out_of_sync)
+  }
+
+  notification_sample_templates = {
+    app_deployed            = <<EOT
+[{
+  "title": ":rocket: Application Deployed: {{ .app.metadata.name}}",
+  "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
+  "color": "#18be52",
+  "fields": [
+    {
+      "title": "Sync Status",
+      "value": "{{.app.status.sync.status}}",
+      "short": true
+    },
+    {
+      "title": "Repository",
+      "value": "<{{.app.spec.source.repoURL}}|View Repo>",
+      "short": true
+    },
+    {
+      "title": "Revision",
+      "value": "{{.app.status.sync.revision}}",
+      "short": true
+    }
+    {{range $index, $c := .app.status.conditions}}
+    {{if not $index}},{{end}}
+    {{if $index}},{{end}}
+    {
+      "title": "{{$c.type}}",
+      "value": "{{$c.message}}",
+      "short": true
+    }
+    {{end}}
+  ]
+}]
+EOT
+    app_health_degraded     = <<EOT
+[{
+  "title": ":warning: Health Degraded: {{ .app.metadata.name}}",
+  "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
+  "color": "#f4c030",
+  "fields": [
+    {
+      "title": "Sync Status",
+      "value": "{{.app.status.sync.status}}",
+      "short": true
+    },
+    {
+      "title": "Repository",
+      "value": "<{{.app.spec.source.repoURL}}|View Repo>",
+      "short": true
+    }
+    {{range $index, $c := .app.status.conditions}}
+    {{if not $index}},{{end}}
+    {{if $index}},{{end}}
+    {
+      "title": ":warning: {{$c.type}}",
+      "value": "{{$c.message}}",
+      "short": true
+    }
+    {{end}}
+  ]
+}]
+EOT
+    app_sync_failed         = <<EOT
+[{
+  "title": ":x: Sync Failed: {{ .app.metadata.name}}",
+  "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
+  "color": "#E96D76",
+  "fields": [
+    {
+      "title": "Sync Status",
+      "value": "{{.app.status.sync.status}}",
+      "short": true
+    },
+    {
+      "title": "Repository",
+      "value": "<{{.app.spec.source.repoURL}}|View Repo>",
+      "short": true
+    }
+    {{range $index, $c := .app.status.conditions}}
+    {{if not $index}},{{end}}
+    {{if $index}},{{end}}
+    {
+      "title": ":x: {{$c.type}}",
+      "value": "{{$c.message}}",
+      "short": true
+    }
+    {{end}}
+  ]
+}]
+EOT
+    app_sync_running        = <<EOT
+[{
+  "title": ":hourglass_flowing_sand: Sync In Progress: {{ .app.metadata.name}}",
+  "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
+  "color": "#0DADEA",
+  "fields": [
+    {
+      "title": "Sync Status",
+      "value": "{{.app.status.sync.status}}",
+      "short": true
+    },
+    {
+      "title": " Repository",
+      "value": "<{{.app.spec.source.repoURL}}|View Repo>",
+      "short": true
+    }
+    {{range $index, $c := .app.status.conditions}}
+    {{if not $index}},{{end}}
+    {{if $index}},{{end}}
+    {
+      "title": "{{$c.type}}",
+      "value": "{{$c.message}}",
+      "short": true
+    }
+    {{end}}
+  ]
+}]
+EOT
+    app_sync_status_unknown = <<EOT
+[{
+  "title": ":question: Sync Status Unknown: {{ .app.metadata.name}}",
+  "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
+  "color": "#E96D76",
+  "fields": [
+    {
+      "title": "Sync Status",
+      "value": "{{.app.status.sync.status}}",
+      "short": true
+    },
+    {
+      "title": "Repository",
+      "value": "<{{.app.spec.source.repoURL}}|View Repo>",
+      "short": true
+    }
+    {{range $index, $c := .app.status.conditions}}
+    {{if not $index}},{{end}}
+    {{if $index}},{{end}}
+    {
+      "title": ":question: {{$c.type}}",
+      "value": "{{$c.message}}",
+      "short": true
+    }
+    {{end}}
+  ]
+}]
+EOT
+    app_sync_succeeded      = <<EOT
+[{
+  "title": ":white_check_mark: Sync Succeeded: {{ .app.metadata.name}}",
+  "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
+  "color": "#18be52",
+  "fields": [
+    {
+      "title": "Sync Status",
+      "value": "{{.app.status.sync.status}}",
+      "short": true
+    },
+    {
+      "title": "Repository",
+      "value": "<{{.app.spec.source.repoURL}}|View Repo>",
+      "short": true
+    }
+    {{range $index, $c := .app.status.conditions}}
+    {{if not $index}},{{end}}
+    {{if $index}},{{end}}
+    {
+      "title": "{{$c.type}}",
+      "value": "{{$c.message}}",
+      "short": true
+    }
+    {{end}}
+  ]
+}]
+EOT
+    app_out_of_sync         = <<EOT
+[{
+  "title": "Out of Sync: {{ .app.metadata.name}}",
+  "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
+  "color": "#f4c030",
+  "fields": [
+    {
+      "title": " Sync Status",
+      "value": "{{.app.status.sync.status}}",
+      "short": true
+    },
+    {
+      "title": "Repository",
+      "value": "<{{.app.spec.source.repoURL}}|View Repo>",
+      "short": true
+    }
+    {{range $index, $c := .app.status.conditions}}
+    {{if not $index}},{{end}}
+    {{if $index}},{{end}}
+    {
+      "title": "{{$c.type}}",
+      "value": "{{$c.message}}",
+      "short": true
+    }
+    {{end}}
+  ],
+  "footer": "ArgoCD Sync Issue"
+}]
+
+EOT
+  }
+
   node_selectors = flatten([
     for key, value in var.node_selector : {
       key   = key
@@ -135,213 +351,32 @@ notifications:
   templates:
     template.app-deployed: |
       slack:
-        attachments: |
-          [{
-            "title": ":rocket: Application Deployed: {{ .app.metadata.name}}",
-            "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-            "color": "#18be52",
-            "fields": [
-              {
-                "title": "Sync Status",
-                "value": "{{.app.status.sync.status}}",
-                "short": true
-              },
-              {
-                "title": "Repository",
-                "value": "<{{.app.spec.source.repoURL}}|View Repo>",
-                "short": true
-              },
-              {
-                "title": "Revision",
-                "value": "{{.app.status.sync.revision}}",
-                "short": true
-              }
-              {{range $index, $c := .app.status.conditions}}
-              {{if not $index}},{{end}}
-              {{if $index}},{{end}}
-              {
-                "title": "{{$c.type}}",
-                "value": "{{$c.message}}",
-                "short": true
-              }
-              {{end}}
-            ]
-          }]
+        attachments: |-
+          ${indent(10, local.notification_templates.app_deployed)}
     template.app-health-degraded: |
       slack:
         attachments: |-
-          [{
-            "title": ":warning: Health Degraded: {{ .app.metadata.name}}",
-            "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-            "color": "#f4c030",
-            "fields": [
-              {
-                "title": "Sync Status",
-                "value": "{{.app.status.sync.status}}",
-                "short": true
-              },
-              {
-                "title": "Repository",
-                "value": "<{{.app.spec.source.repoURL}}|View Repo>",
-                "short": true
-              }
-              {{range $index, $c := .app.status.conditions}}
-              {{if not $index}},{{end}}
-              {{if $index}},{{end}}
-              {
-                "title": ":warning: {{$c.type}}",
-                "value": "{{$c.message}}",
-                "short": true
-              }
-              {{end}}
-            ]
-          }]
+          ${indent(10, local.notification_templates.app_health_degraded)}
     template.app-sync-failed: |
       slack:
         attachments: |-
-          [{
-            "title": ":x: Sync Failed: {{ .app.metadata.name}}",
-            "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-            "color": "#E96D76",
-            "fields": [
-              {
-                "title": "Sync Status",
-                "value": "{{.app.status.sync.status}}",
-                "short": true
-              },
-              {
-                "title": "Repository",
-                "value": "<{{.app.spec.source.repoURL}}|View Repo>",
-                "short": true
-              }
-              {{range $index, $c := .app.status.conditions}}
-              {{if not $index}},{{end}}
-              {{if $index}},{{end}}
-              {
-                "title": ":x: {{$c.type}}",
-                "value": "{{$c.message}}",
-                "short": true
-              }
-              {{end}}
-            ]
-          }]
+          ${indent(10, local.notification_templates.app_sync_failed)}
     template.app-sync-running: |
       slack:
         attachments: |-
-          [{
-            "title": ":hourglass_flowing_sand: Sync In Progress: {{ .app.metadata.name}}",
-            "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-            "color": "#0DADEA",
-            "fields": [
-              {
-                "title": "Sync Status",
-                "value": "{{.app.status.sync.status}}",
-                "short": true
-              },
-              {
-                "title": " Repository",
-                "value": "<{{.app.spec.source.repoURL}}|View Repo>",
-                "short": true
-              }
-              {{range $index, $c := .app.status.conditions}}
-              {{if not $index}},{{end}}
-              {{if $index}},{{end}}
-              {
-                "title": "{{$c.type}}",
-                "value": "{{$c.message}}",
-                "short": true
-              }
-              {{end}}
-            ]
-          }]
+          ${indent(10, local.notification_templates.app_sync_running)}
     template.app-sync-status-unknown: |
       slack:
         attachments: |-
-          [{
-            "title": ":question: Sync Status Unknown: {{ .app.metadata.name}}",
-            "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-            "color": "#E96D76",
-            "fields": [
-              {
-                "title": "Sync Status",
-                "value": "{{.app.status.sync.status}}",
-                "short": true
-              },
-              {
-                "title": "Repository",
-                "value": "<{{.app.spec.source.repoURL}}|View Repo>",
-                "short": true
-              }
-              {{range $index, $c := .app.status.conditions}}
-              {{if not $index}},{{end}}
-              {{if $index}},{{end}}
-              {
-                "title": ":question: {{$c.type}}",
-                "value": "{{$c.message}}",
-                "short": true
-              }
-              {{end}}
-            ]
-          }]
+          ${indent(10, local.notification_templates.app_sync_status_unknown)}
     template.app-sync-succeeded: |
       slack:
         attachments: |-
-          [{
-            "title": ":white_check_mark: Sync Succeeded: {{ .app.metadata.name}}",
-            "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-            "color": "#18be52",
-            "fields": [
-              {
-                "title": "Sync Status",
-                "value": "{{.app.status.sync.status}}",
-                "short": true
-              },
-              {
-                "title": "Repository",
-                "value": "<{{.app.spec.source.repoURL}}|View Repo>",
-                "short": true
-              }
-              {{range $index, $c := .app.status.conditions}}
-              {{if not $index}},{{end}}
-              {{if $index}},{{end}}
-              {
-                "title": "{{$c.type}}",
-                "value": "{{$c.message}}",
-                "short": true
-              }
-              {{end}}
-            ]
-          }]
+          ${indent(10, local.notification_templates.app_sync_succeeded)}
     template.app-out-of-sync: |
       slack:
         attachments: |-
-          [{
-            "title": "Out of Sync: {{ .app.metadata.name}}",
-            "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-            "color": "#f4c030",
-            "fields": [
-              {
-                "title": " Sync Status",
-                "value": "{{.app.status.sync.status}}",
-                "short": true
-              },
-              {
-                "title": "Repository",
-                "value": "<{{.app.spec.source.repoURL}}|View Repo>",
-                "short": true
-              }
-              {{range $index, $c := .app.status.conditions}}
-              {{if not $index}},{{end}}
-              {{if $index}},{{end}}
-              {
-                "title": "{{$c.type}}",
-                "value": "{{$c.message}}",
-                "short": true
-              }
-              {{end}}
-            ],
-            "footer": "ArgoCD Sync Issue"
-          }]
+          ${indent(10, local.notification_templates.app_out_of_sync)}
   triggers:
     trigger.on-deployed: |
       - description: Application is synced and healthy. Triggered once per commit.

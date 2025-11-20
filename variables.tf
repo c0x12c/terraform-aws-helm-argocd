@@ -214,3 +214,17 @@ variable "ingress_scheme" {
     error_message = "ingress_scheme must be either 'internet-facing' or 'internal'"
   }
 }
+
+variable "notification_templates" {
+  description = "Custom templates for ArgoCD notification. Leave the field null to use sample (default) template provided by this module."
+  type = object({
+    app_deployed            = optional(string, null)
+    app_health_degraded     = optional(string, null)
+    app_sync_failed         = optional(string, null)
+    app_sync_running        = optional(string, null)
+    app_sync_status_unknown = optional(string, null)
+    app_sync_succeeded      = optional(string, null)
+    app_out_of_sync         = optional(string, null)
+  })
+  default = {}
+}
