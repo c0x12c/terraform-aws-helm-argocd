@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.2]() (2025-11-20)
+
+### Fix Bugs
+
+* Fix template fallback function check from `try` to `coalesce`.
+
 ## [1.2.1]() (2025-11-20)
 
 ### Features
@@ -55,15 +61,16 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 * Change variables that defined in `camelCase` to `snake_case`
-  * `var.external_cluster`
-    * assumeRoles -> assume_role
-    * clusterResources -> cluster_resources
-    * awsAuthConfig -> aws_auth_config
-    * clusterName -> cluster_name
-    * roleARN -> role_arn
-    * tlsClientConfig -> tls_client_config
-    * caData -> ca_data
-* Add variable `enabled_managed_in_cluster` to enable in_cluster management, and `in_cluster_name` to change its name when `enabled_managed_in_cluster` is enable
+    * `var.external_cluster`
+        * assumeRoles -> assume_role
+        * clusterResources -> cluster_resources
+        * awsAuthConfig -> aws_auth_config
+        * clusterName -> cluster_name
+        * roleARN -> role_arn
+        * tlsClientConfig -> tls_client_config
+        * caData -> ca_data
+* Add variable `enabled_managed_in_cluster` to enable in_cluster management, and `in_cluster_name` to change its name
+  when `enabled_managed_in_cluster` is enable
 
 ## [0.3.15]() (2025-04-11)
 
@@ -110,9 +117,10 @@ All notable changes to this project will be documented in this file.
 ### Fix Bugs
 
 * Remove those attributes when creating helm argocd
+
 ```hcl
-  wait             = true
-  timeout          = 300
+  wait  = true
+timeout = 300
 ```
 
 ## [0.3.3]() (2025-04-03)
@@ -120,7 +128,8 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 * Update provider version
-* Split CRDs include `Projects` and `Applications` to a single sub-module, which will handle creating Projects and Applications.
+* Split CRDs include `Projects` and `Applications` to a single sub-module, which will handle creating Projects and
+  Applications.
 
 ## [0.3.2]() (2025-04-01)
 
