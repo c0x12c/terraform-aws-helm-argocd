@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1]() (2025-11-20)
+
+### Features
+
+* Added variable `notification_templates` to customize notification templates.
+
 ## [1.2.0]() (2025-10-24)
 
 ### ⚠ BREAKING CHANGES
