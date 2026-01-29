@@ -384,6 +384,7 @@ notifications:
         send:
         - app-deployed
         when: app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'
+        oncePer: app.status.operationState.syncResult.revision
     trigger.on-health-degraded: |
       - description: Application has degraded
         send:
