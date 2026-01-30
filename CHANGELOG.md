@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0]() (2026-01-29)
+
+### Features
+
+* Update `trigger.on-deployed`: trigger once per new deployment revision.
+
 ## [1.2.2]() (2025-11-20)
 
 ### Fix Bugs
