@@ -150,6 +150,13 @@ variable "slack_token" {
   sensitive   = true
 }
 
+variable "slack_webhook_url" {
+  description = "Slack incoming webhook URL for ArgoCD notifications. Takes priority over slack_token when provided."
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
 variable "domain_name" {
   description = "Domain name for ArgoCD"
   type        = string

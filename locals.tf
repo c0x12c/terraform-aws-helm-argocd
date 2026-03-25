@@ -1,4 +1,6 @@
 locals {
+  use_slack_webhook = var.slack_webhook_url != ""
+
   notification_templates = {
     app_deployed            = coalesce(var.notification_templates.app_deployed, local.notification_sample_templates.app_deployed)
     app_health_degraded     = coalesce(var.notification_templates.app_health_degraded, local.notification_sample_templates.app_health_degraded)
@@ -335,10 +337,18 @@ notifications:
   enabled: true
   secret:
     items:
+      %{if local.use_slack_webhook}
+      slack-webhook-url: ${var.slack_webhook_url}
+      %{else}
       slack-token: ${var.slack_token}
+      %{endif}
   subscriptions:
     - recipients:
+        %{if local.use_slack_webhook}
+        - webhook:slack
+        %{else}
         - slack:social
+        %{endif}
       triggers:
         - on-sync-status-unknown
         - app-deployed
@@ -346,9 +356,61 @@ notifications:
         - app-sync-running
         - app-sync-succeeded
   notifiers:
+    %{if local.use_slack_webhook}
+    service.webhook.slack: |
+      url: $slack-webhook-url
+      headers:
+        - name: Content-Type
+          value: application/json
+    %{else}
     service.slack: |
       token: $slack-token
+    %{endif}
   templates:
+    %{if local.use_slack_webhook}
+    template.app-deployed: |
+      webhook:
+        slack:
+          method: POST
+          body: |
+            {"attachments": ${local.notification_templates.app_deployed}}
+    template.app-health-degraded: |
+      webhook:
+        slack:
+          method: POST
+          body: |
+            {"attachments": ${local.notification_templates.app_health_degraded}}
+    template.app-sync-failed: |
+      webhook:
+        slack:
+          method: POST
+          body: |
+            {"attachments": ${local.notification_templates.app_sync_failed}}
+    template.app-sync-running: |
+      webhook:
+        slack:
+          method: POST
+          body: |
+            {"attachments": ${local.notification_templates.app_sync_running}}
+    template.app-sync-status-unknown: |
+      webhook:
+        slack:
+          method: POST
+          body: |
+            {"attachments": ${local.notification_templates.app_sync_status_unknown}}
+    template.app-sync-succeeded: |
+      webhook:
+        slack:
+          method: POST
+          body: |
+            {"attachments": ${local.notification_templates.app_sync_succeeded}}
+    template.app-out-of-sync: |
+      webhook:
+        slack:
+          method: POST
+          body: |
+            {"attachments": ${local.notification_templates.app_out_of_sync}}
+    %{else}
     template.app-deployed: |
       slack:
         attachments: |-
@@ -377,6 +439,7 @@ notifications:
       slack:
         attachments: |-
           ${indent(10, local.notification_templates.app_out_of_sync)}
+    %{endif}
   triggers:
     trigger.on-deployed: |
       - description: Application is synced and healthy. Triggered once per commit.

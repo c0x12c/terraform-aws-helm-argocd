@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0]() (2026-03-25)
+
+### Features
+
+* Add `slack_webhook_url` variable to support Slack incoming webhook URL for notifications (takes priority over `slack_token`).
+* Support dual Slack notification methods: webhook URL (recommended) and bot token (legacy).
+
 ## [1.3.0]() (2026-01-29)
 
 ### Features

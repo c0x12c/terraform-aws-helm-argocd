@@ -64,6 +64,9 @@ module "argocd" {
   repositories = ["argocd-atlas"]
 
   # Slack Connection
+  # Option 1: Webhook URL (recommended, takes priority)
+  # slack_webhook_url = "https://hooks.slack.com/services/T00/B00/XXX"
+  # Option 2: Bot token
   slack_token = "xobx-1234"
 
   # Managed Node (OPTIONAL)
