@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.1]() (2026-05-16)
+
+### Fix Bugs
+
+* `argocd-project` module: replace the
+  `lifecycle.ignore_changes = [manifest.spec.destinations]` block with
+  `field_manager.force_conflicts = true` + a narrow `computed_fields`
+  list (annotations, labels, finalizers — the K8s-managed bits that
+  legitimately drift). The old `ignore_changes` was suppressing drift
+  detection on the entire `manifest` attribute under newer versions
+  of the kubernetes provider, so callers who added or updated fields
+  like `clusterResourceWhitelist`, `sourceRepos`, etc. saw
+  `Apply complete: 0 changed` while the live AppProject stayed
+  unchanged — requiring out-of-band `kubectl patch` to recover.
+
+  Force-conflicts on server-side apply preserves the original goal
+  (don't fight with K8s defaulting on destinations) while letting
+  every other spec field flow through cleanly.
+
 ## [1.4.0]() (2026-05-16)
 
 ### Features
