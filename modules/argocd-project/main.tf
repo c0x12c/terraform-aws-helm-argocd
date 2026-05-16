@@ -82,10 +82,14 @@ resource "kubernetes_manifest" "this" {
     )
   }
 
-  lifecycle {
-    ignore_changes = [
-      manifest.spec.destinations
-    ]
+  computed_fields = [
+    "metadata.annotations",
+    "metadata.labels",
+    "metadata.finalizers",
+  ]
+
+  field_manager {
+    force_conflicts = true
   }
 }
 
