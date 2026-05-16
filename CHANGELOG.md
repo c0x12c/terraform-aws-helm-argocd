@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0]() (2026-05-16)
+
+### Features
+
+* `argocd-project` module: add `cluster_resource_whitelist`,
+  `namespace_resource_whitelist`, `cluster_resource_blacklist`, and
+  `namespace_resource_blacklist` inputs to control which Kubernetes
+  resource kinds Applications under the project may sync. Default
+  preserves existing behavior (no cluster-scoped resources allowed)
+  so this is non-breaking.
+* `argocd-project` module: add `source_repos` input (default `["*"]`)
+  to override the previously-hardcoded permissive value.
+
 ## [1.3.0]() (2026-01-29)
 
 ### Features

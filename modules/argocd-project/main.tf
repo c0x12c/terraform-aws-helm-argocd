@@ -48,24 +48,38 @@ resource "kubernetes_manifest" "this" {
       name      = var.project_name
     }
 
-    spec = {
-      description = var.description
-      sourceRepos = ["*"]
-      destinations = concat(
-        var.destinations,
-        [{
-          name      = "in-cluster"
-          namespace = var.argocd_namespace
-        }]
-      )
-      roles = [
-        for group, roles in local.group_roles : {
-          name     = group
-          groups   = ["${var.github_organization}:${group}"]
-          policies = [for role in roles : "p, proj:${var.project_name}:${group}, ${role}, ${var.project_name}/*, allow"]
-        }
-      ]
-    }
+    spec = merge(
+      {
+        description = var.description
+        sourceRepos = var.source_repos
+        destinations = concat(
+          var.destinations,
+          [{
+            name      = "in-cluster"
+            namespace = var.argocd_namespace
+          }]
+        )
+        roles = [
+          for group, roles in local.group_roles : {
+            name     = group
+            groups   = ["${var.github_organization}:${group}"]
+            policies = [for role in roles : "p, proj:${var.project_name}:${group}, ${role}, ${var.project_name}/*, allow"]
+          }
+        ]
+      },
+      length(var.cluster_resource_whitelist) > 0 ? {
+        clusterResourceWhitelist = var.cluster_resource_whitelist
+      } : {},
+      length(var.namespace_resource_whitelist) > 0 ? {
+        namespaceResourceWhitelist = var.namespace_resource_whitelist
+      } : {},
+      length(var.cluster_resource_blacklist) > 0 ? {
+        clusterResourceBlacklist = var.cluster_resource_blacklist
+      } : {},
+      length(var.namespace_resource_blacklist) > 0 ? {
+        namespaceResourceBlacklist = var.namespace_resource_blacklist
+      } : {},
+    )
   }
 
   lifecycle {

@@ -90,3 +90,45 @@ variable "destinations" {
     namespace = string
   }))
 }
+
+variable "source_repos" {
+  description = "Allowed Git/Helm/OCI source repos for Applications under this project. Defaults to ['*'] to preserve existing behavior."
+  type        = list(string)
+  default     = ["*"]
+}
+
+variable "cluster_resource_whitelist" {
+  description = "Cluster-scoped resource kinds Applications under this project may apply. Empty list means no cluster-scoped resources allowed (ArgoCD default)."
+  type = list(object({
+    group = string
+    kind  = string
+  }))
+  default = []
+}
+
+variable "namespace_resource_whitelist" {
+  description = "Namespace-scoped resource kinds Applications under this project may apply. Empty list means ArgoCD applies its default (all namespaced kinds allowed)."
+  type = list(object({
+    group = string
+    kind  = string
+  }))
+  default = []
+}
+
+variable "cluster_resource_blacklist" {
+  description = "Cluster-scoped resource kinds Applications under this project may NOT apply. Useful when whitelist is broad but specific kinds must be denied."
+  type = list(object({
+    group = string
+    kind  = string
+  }))
+  default = []
+}
+
+variable "namespace_resource_blacklist" {
+  description = "Namespace-scoped resource kinds Applications under this project may NOT apply."
+  type = list(object({
+    group = string
+    kind  = string
+  }))
+  default = []
+}
