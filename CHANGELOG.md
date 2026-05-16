@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.2]() (2026-05-16)
+
+### Fix Bugs
+
+* `argocd-project` module: force-replace `kubernetes_manifest.this`
+  whenever any spec input changes (`sourceRepos`, `destinations`,
+  `cluster_resource_whitelist`, `namespace_resource_whitelist`,
+  blacklists). Use a sentinel `terraform_data.project_spec_hash`
+  with `replace_triggered_by` on the manifest.
+
+  The 1.4.1 fix alone was not enough: when an existing project's
+  state was recorded under 1.4.0's broken `ignore_changes` block,
+  Terraform's view of "current state" already matches the new
+  desired manifest — so plan reports zero diff even after the
+  consumer adds new spec fields, and the live AppProject stays
+  out-of-sync. `replace_triggered_by` on a hash of the inputs
+  guarantees a recreate whenever the consumer changes anything
+  that matters.
+
+  Trade-off: a recreate momentarily removes the AppProject (~1 s).
+  Child Applications stay in the cluster but ArgoCD will surface
+  them as "AppProject not found" until the recreate completes.
+  Acceptable for a config-only resource; the alternative is the
+  current silent drift, which is worse.
+
 ## [1.4.1]() (2026-05-16)
 
 ### Fix Bugs

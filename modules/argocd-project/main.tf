@@ -38,6 +38,22 @@ locals {
 }
 
 
+resource "terraform_data" "project_spec_hash" {
+  input = sha256(jsonencode({
+    description                  = var.description
+    sourceRepos                  = var.source_repos
+    destinations                 = var.destinations
+    argocd_namespace             = var.argocd_namespace
+    project_name                 = var.project_name
+    github_organization          = var.github_organization
+    group_roles                  = local.group_roles
+    cluster_resource_whitelist   = var.cluster_resource_whitelist
+    namespace_resource_whitelist = var.namespace_resource_whitelist
+    cluster_resource_blacklist   = var.cluster_resource_blacklist
+    namespace_resource_blacklist = var.namespace_resource_blacklist
+  }))
+}
+
 resource "kubernetes_manifest" "this" {
   manifest = {
     apiVersion = "argoproj.io/v1alpha1"
@@ -90,6 +106,10 @@ resource "kubernetes_manifest" "this" {
 
   field_manager {
     force_conflicts = true
+  }
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.project_spec_hash]
   }
 }
 
