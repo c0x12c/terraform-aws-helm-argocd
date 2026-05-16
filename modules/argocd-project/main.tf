@@ -40,8 +40,14 @@ locals {
 
 resource "terraform_data" "project_spec_hash" {
   input = sha256(jsonencode({
+    description                  = var.description
     sourceRepos                  = var.source_repos
     destinations                 = var.destinations
+    argocd_namespace             = var.argocd_namespace
+    project_name                 = var.project_name
+    github_organization          = var.github_organization
+    predefined_group_rules       = var.predefined_group_rules
+    custom_group_roles           = var.custom_group_roles
     cluster_resource_whitelist   = var.cluster_resource_whitelist
     namespace_resource_whitelist = var.namespace_resource_whitelist
     cluster_resource_blacklist   = var.cluster_resource_blacklist
