@@ -143,5 +143,17 @@ resource "kubernetes_manifest" "app" {
       syncPolicy = var.sync_policy
     }
   }
+
+  computed_fields = [
+    "metadata.annotations",
+    "metadata.labels",
+    "metadata.finalizers",
+    "spec.operation",
+  ]
+
+  field_manager {
+    force_conflicts = true
+  }
+
   depends_on = [kubernetes_manifest.this]
 }
